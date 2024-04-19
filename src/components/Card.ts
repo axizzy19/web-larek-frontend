@@ -1,8 +1,10 @@
-import { bem, ensureElement } from "../utils/utils";
+import { bem, createElement, ensureElement } from "../utils/utils";
 import { Component } from "./base/Component";
+import { EventEmitter } from "./base/events";
 import { CategoryKey, CardStatus } from "../types";
 import clsx from "clsx";
-import { BasketItem, IBasketItem } from "./common/Basket";
+import { IEvents } from "./base/events";
+import { Basket, BasketItem, IBasketItem } from "./common/Basket";
 
 export interface ICardActions {
   onClick: (event: MouseEvent) => void;
@@ -14,7 +16,6 @@ export interface ICard<T> {
   image: string;
   category: string;
   price: number;
-  status: string;
 }
 
 export class Card<T> extends Component<ICard<T>> {
@@ -24,30 +25,37 @@ export class Card<T> extends Component<ICard<T>> {
   protected _button?: HTMLButtonElement;
   protected _category: HTMLElement;
   protected _price: HTMLElement;
+  protected _card: HTMLElement;
   protected _status: HTMLElement;
 
   constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
     super(container) ;
+    this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
+    this._image = container.querySelector(`.${blockName}__image`);
+    this._button = container.querySelector(`.${blockName}__button`);
+    this._description = container.querySelector(`.${blockName}__description`);
+    this._category = container.querySelector(`.${blockName}__category`);
+    this._price = container.querySelector(`.${blockName}__price`);
     
-    this._title = ensureElement<HTMLElement>(`${blockName}__title`, container);
-    this._image = ensureElement<HTMLImageElement>(`${blockName}__image`, container);
-    this._button = container.querySelector(`${blockName}__button`);
-    this._description = container.querySelector(`${blockName}__description`);
-    this._category = container.querySelector(`${blockName}__category`);
-    this._price = container.querySelector(`${blockName}__price`);
+    
 
     if (actions?.onClick) {
-        if (this._button) {
-            this._button.addEventListener('click', actions.onClick);
-        } else {
-            container.addEventListener('click', actions.onClick);
-        }
-    }
+      if (this._button) {
+          this._button.addEventListener('click', actions.onClick);
+      } else {
+          container.addEventListener('click', actions.onClick);
+      }
   }
 
-  set status(value: CardStatus) {
-    this.setStatus(this.container, value)
   }
+
+//   set status({ status, label }: CatalogItemStatus) {
+//     this.setText(this._status, label);
+//     this._status.className = clsx('card__status', {
+//         [bem(this.blockName, 'status', 'active').name]: status === 'active',
+//         [bem(this.blockName, 'status', 'closed').name]: status === 'closed'
+//     });
+// }
 
   set id(value: string) {
     this.container.dataset.id = value;
@@ -98,15 +106,19 @@ export type CatalogItemStatus = {
 }
 
 
-// Карты каталога
-export class CatalogItem extends Card<CatalogItemStatus> {
-  protected _status: HTMLElement;
+// Карта каталога
+export class CardPreview extends Card<CatalogItemStatus> {
   
   constructor(container: HTMLElement, actions?: ICardActions) {
-    super('.card', container, actions);
-
-    this._status = container.querySelector('.card__status');
+    super('card', container, actions);
+    
+    //this._image = ensureElement<HTMLImageElement>(`.card__image`, container);
+    const cardCatalog = document.querySelectorAll('.card__title');
+    
+    
   }
+
+  
 
 }
 

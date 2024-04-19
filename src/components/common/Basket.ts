@@ -14,22 +14,26 @@ export class Basket extends Component<IBasketView> {
   protected _list: HTMLElement;
   protected _total: HTMLElement;
   protected _button: HTMLElement;
+  protected _items: HTMLElement[];
+
 
   constructor(container: HTMLElement, protected events: EventEmitter) {
     super(container);
-
+    
     this._list = ensureElement<HTMLElement>('.basket__list', this.container);
+    
     this._total = this.container.querySelector('.basket__price');
     this._button = this.container.querySelector('.basket__button');
     
-
+    this._items = [];
     if (this._button) {
       this._button.addEventListener('click', () => {
           events.emit('order:open');
       })
     }
 
-    this.items = [];
+    // console.log(this)
+    
   }
 
   set items(items: HTMLElement[]) {
@@ -42,13 +46,13 @@ export class Basket extends Component<IBasketView> {
       }
   }
 
-  set selected(items: string[]) {
-    if (items.length) {
-        this.setDisabled(this._button, false);
-    } else {
-        this.setDisabled(this._button, true);
-    }
-  }
+  // set selected(items: string[]) {
+  //   if (items.length) {
+  //       this.setDisabled(this._button, false);
+  //   } else {
+  //       this.setDisabled(this._button, true);
+  //   }
+  // }
 
   set total(total: number) {
       this.setText(this._total, formatNumber(total));
@@ -69,11 +73,14 @@ export class BasketItem extends Card<IBasketItem> {
 
   constructor(container: HTMLElement, actions?: ICardActions) {
     super('card', container, actions);
-
-    this._title = ensureElement<HTMLElement>('.card__title');
-    this._listNumber = ensureElement<HTMLElement>('.basket__item-index');
-    this._button = ensureElement<HTMLButtonElement>('.basket__item-delete');
-    this._price = ensureElement<HTMLElement>('.card__price');
+    
+    this._title = container.querySelector('.card__title');
+    this._listNumber = container.querySelector('.basket__item-index');
+    this._button = container.querySelector('.basket__item-delete');
+    this._price = container.querySelector('.card__price');
+    
     
   }
+
+
 }

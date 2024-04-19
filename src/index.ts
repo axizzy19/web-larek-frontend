@@ -7,9 +7,9 @@ import { Page } from './components/Page';
 import { Modal } from './components/common/Modal';
 import { SaleApi } from './components/CardsApi';
 import { AppState, CardItem, CatalogChangeEvent } from './components/AppData';
-import { Card, CatalogItem } from './components/Card';
+import { Card, CardPreview } from './components/Card';
 import { BasketItem, Basket } from './components/common/Basket';
-
+import { ICard } from './types';
 
 
 const events = new EventEmitter();
@@ -25,7 +25,6 @@ const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
-
 // Модель данных приложения
 const appData = new AppState({}, events);
 
@@ -41,7 +40,7 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 // Бизнес-логика
 events.on<CatalogChangeEvent>('items:changed', () => {
   page.catalog = appData.catalog.map(item => {
-    const card = new CatalogItem(cloneTemplate(cardCatalogTemplate), {
+    const card = new CardPreview(cloneTemplate(cardCatalogTemplate), {
       onClick: () => events.emit(`card:select`, item)
     });
     
@@ -68,16 +67,31 @@ events.on('basket:open', () => {
   modal.render({content: basket.render()})
 })
 
+events.on('item:add', (item: CardItem) => {
+  appData.addToBasket(item);
+})
+
 // изменения в корзине
-events.on('basket:changed', () => {
-  let total = 0;
-  console.log(appData.getClosedCards())
-  basket.total = total;
+events.on('basket:changed', (basketItems) => {
+  
+  basket.items = (Object.values(basketItems).map((item) => {
+    const card = new BasketItem(cloneTemplate(cardBasketTemplate));
+    return card.render({
+      title: item.title,
+      price: item.price
+    })
+    
+  }))
 })
 
 events.on('preview:changed', (item: CardItem) => {
   const showItem = (item: CardItem) => {
-    const card = new CatalogItem(cloneTemplate(cardPreviewTemplate));
+    const card = new CardPreview(cloneTemplate(cardPreviewTemplate), {
+      onClick: () => {
+        events.emit('item:add', item)
+        
+      }
+    });
     modal.render({
       content: card.render({
         title: item.title,
@@ -85,21 +99,15 @@ events.on('preview:changed', (item: CardItem) => {
         description: item.description,
         price: item.price,
         category: item.category,
-        status: item.status
       })
     })
-    console.log(item.status)
+    
   }
   // открытие модального окна
   if (item) {
     api.getCardItem(item.id)
       .then((result) => {
-        item.title = result.title;
         item.description = result.description;
-        item.image = result.image;
-        item.price = result.price;
-        item.category = result.category;
-        // item.status = 'active';
         showItem(item);
       })
       .catch((err) => {
@@ -113,6 +121,8 @@ events.on('preview:changed', (item: CardItem) => {
 
 
 })
+
+
 
 
 

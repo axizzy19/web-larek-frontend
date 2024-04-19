@@ -27,11 +27,6 @@ export abstract class Component<T> {
         }
     }
 
-    protected setStatus(element: HTMLElement, value: CardStatus) {
-        if (element) {
-            element.classList.add(`${value}`);
-        }
-    }
 
     protected setCategory(element: HTMLElement, value: CategoryKey) {
         if (element) {

@@ -14,12 +14,15 @@ export class CardItem extends Model<ICard> {
     category: string;
     image: string;
     price: number;
-    status: CardStatus;
+}
 
+export interface IBasket {
+  items: HTMLElement[],
+  total: number
 }
 
 export class AppState extends Model<IAppState> {
-  basket: string[];
+  basket: CardItem[] = [];
   catalog: CardItem[];
   loading: boolean;
   order: IOrder = {
@@ -41,6 +44,7 @@ export class AppState extends Model<IAppState> {
     }
   }
 
+
   clearBasket() {
     this.order.items.forEach(id => {
       this.toggleOrderedCard(id, false);
@@ -48,8 +52,11 @@ export class AppState extends Model<IAppState> {
     })
   }
 
-  deleteBasketButton(id: string) {
+  addToBasket(item: CardItem) {
+    this.basket.push(item);
+    this.emitChanges('basket:changed', this.basket);
     
+    return this.basket;
   }
 
    // итоговая сумма в корзине
@@ -59,9 +66,6 @@ export class AppState extends Model<IAppState> {
 
   // устанавливаем карточки
   setCatalog(items: CardItem[]) {
-    // this.catalog = items.map((item) => {
-    //   return new CardItem(item, this.events)
-    // });
     this.catalog = items;
     this.emitChanges('items:changed', { catalog: this.catalog });
   }
@@ -72,17 +76,6 @@ export class AppState extends Model<IAppState> {
     this.emitChanges('preview:changed', item);
   }
 
-  // Выбранные карточки
-  getActiveCards(): CardItem[] {
-    return this.catalog
-      .filter(item => item.status === 'active');
-      // .filter(item => item.status)
-  }
-
-  getClosedCards(): CardItem[] {
-    return this.catalog
-      .filter(item => item.status === 'closed');
-  }
 
   // оформление покупки
   setOrderField(field: keyof IOrderForm, value: string) {
