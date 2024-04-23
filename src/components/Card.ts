@@ -1,10 +1,6 @@
-import { bem, createElement, ensureElement } from "../utils/utils";
+import { ensureElement } from "../utils/utils";
 import { Component } from "./base/Component";
-import { EventEmitter } from "./base/events";
-import { CategoryKey, CardStatus } from "../types";
-import clsx from "clsx";
-import { IEvents } from "./base/events";
-import { Basket, BasketItem, IBasketItem } from "./common/Basket";
+import { CategoryKey } from "../types";
 
 export interface ICardActions {
   onClick: (event: MouseEvent) => void;
@@ -16,6 +12,8 @@ export interface ICard<T> {
   image: string;
   category: string;
   price: number;
+  chosen: boolean
+  index: number
 }
 
 export class Card<T> extends Component<ICard<T>> {
@@ -36,8 +34,6 @@ export class Card<T> extends Component<ICard<T>> {
     this._description = container.querySelector(`.${blockName}__description`);
     this._category = container.querySelector(`.${blockName}__category`);
     this._price = container.querySelector(`.${blockName}__price`);
-    
-    
 
     if (actions?.onClick) {
       if (this._button) {
@@ -45,17 +41,8 @@ export class Card<T> extends Component<ICard<T>> {
       } else {
           container.addEventListener('click', actions.onClick);
       }
+    }
   }
-
-  }
-
-//   set status({ status, label }: CatalogItemStatus) {
-//     this.setText(this._status, label);
-//     this._status.className = clsx('card__status', {
-//         [bem(this.blockName, 'status', 'active').name]: status === 'active',
-//         [bem(this.blockName, 'status', 'closed').name]: status === 'closed'
-//     });
-// }
 
   set id(value: string) {
     this.container.dataset.id = value;
@@ -98,27 +85,9 @@ export class Card<T> extends Component<ICard<T>> {
     this.setPrice(this._price, value);
   }
 
-}
-
-export type CatalogItemStatus = {
-  status: CardStatus,
-  label: string
-}
-
-
-// Карта каталога
-export class CardPreview extends Card<CatalogItemStatus> {
-  
-  constructor(container: HTMLElement, actions?: ICardActions) {
-    super('card', container, actions);
-    
-    //this._image = ensureElement<HTMLImageElement>(`.card__image`, container);
-    const cardCatalog = document.querySelectorAll('.card__title');
-    
-    
+  set selected(value: boolean) {
+    if (!this._button.disabled) {
+      this._button.disabled = value;
+    }
   }
-
-  
-
 }
-

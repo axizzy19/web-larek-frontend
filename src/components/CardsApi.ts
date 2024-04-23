@@ -4,7 +4,6 @@ import { ICard } from '../types/index';
 export interface ISaleApi {
   getCardsList: () => Promise<ICard[]>;
   getCardItem: (id: string) => Promise<ICard>;
-
 }
 
 export class SaleApi extends Api implements ISaleApi {
@@ -24,7 +23,6 @@ export class SaleApi extends Api implements ISaleApi {
     )
   }
   
-
   getCardItem(id: string): Promise<ICard> {
     return this.get(`/product/${id}`).then(
       (item: ICard) => ({

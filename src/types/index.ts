@@ -14,26 +14,27 @@ export interface ICardItem {
   category: string;
   image: string;
   price: number;
+  chosen: boolean
 }
 
 export type ICard = ICardItem & ISale;
 
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
+export type FormErrors = Partial<Record<keyof IOrderForm, string>>;
 
-export interface IOrderFormFirst {
-  paymentType: string;
+export interface IOrder {
+  items: string[];
+  payment: string;
+  total: number;
   address: string;
-}
-
-export interface IOrderFormSecond {
   email: string;
   phone: string;
 }
 
-export type IOrderForm = IOrderFormFirst & IOrderFormSecond;
-
-export interface IOrder extends IOrderFormFirst, IOrderFormSecond {
-  items: string[];
+export interface IOrderForm {
+  payment: string;
+  address: string;
+  email: string;
+  phone: string;
 }
 
 export interface IAppState {
@@ -57,4 +58,11 @@ export const Category: { [key in CategoryKey]: string} = {
 	'кнопка': 'button',
 	'дополнительное': 'additional',
 	'хард-скил': 'hard',
+}
+
+export type IPaymentType = 'card' | 'cash';
+
+export type ApiResponse<T> = {
+  total: number,
+  items: T[]
 }
