@@ -1,10 +1,3 @@
-export type CardStatus = 'active' | 'closed'; 
-
-// интерфейс карточки с продажей
-export interface ISale {
-  status: CardStatus;
-  price: number;
-}
 
 // интерфейс карточки общий
 export interface ICardItem {
@@ -17,7 +10,7 @@ export interface ICardItem {
   chosen: boolean
 }
 
-export type ICard = ICardItem & ISale;
+export type ICard = ICardItem;
 
 export type FormErrors = Partial<Record<keyof IOrderForm, string>>;
 
@@ -42,7 +35,6 @@ export interface IAppState {
   basket: string[];
   preview: string | null;
   order: IOrder | null;
-  loading: boolean;
 }
 
 export type CategoryKey =

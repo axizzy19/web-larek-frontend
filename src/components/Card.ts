@@ -23,8 +23,6 @@ export class Card<T> extends Component<ICard<T>> {
   protected _button?: HTMLButtonElement;
   protected _category: HTMLElement;
   protected _price: HTMLElement;
-  protected _card: HTMLElement;
-  protected _status: HTMLElement;
 
   constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
     super(container) ;
@@ -35,9 +33,12 @@ export class Card<T> extends Component<ICard<T>> {
     this._category = container.querySelector(`.${blockName}__category`);
     this._price = container.querySelector(`.${blockName}__price`);
 
+    
+    
+
     if (actions?.onClick) {
       if (this._button) {
-          this._button.addEventListener('click', actions.onClick);
+            this._button.addEventListener('click', actions.onClick);
       } else {
           container.addEventListener('click', actions.onClick);
       }
@@ -83,6 +84,9 @@ export class Card<T> extends Component<ICard<T>> {
 
   set price(value: string) {
     this.setPrice(this._price, value);
+    if (this._price.textContent === 'Бесценно') {
+      this.setDisabled(this._button, true)
+    }
   }
 
   set selected(value: boolean) {

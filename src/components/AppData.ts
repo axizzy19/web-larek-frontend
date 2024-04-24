@@ -24,7 +24,6 @@ export interface IBasket {
 export class AppState extends Model<IAppState> {
   basket: CardItem[] = [];
   catalog: CardItem[];
-  loading: boolean;
   order: IOrder = {
     items: [],
     payment: '',

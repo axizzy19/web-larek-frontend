@@ -1,4 +1,4 @@
-import { CategoryKey, Category, CardStatus } from "../../types";
+import { CategoryKey, Category } from "../../types";
 
 export abstract class Component<T> {
     protected constructor(protected container: HTMLElement) {}

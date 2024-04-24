@@ -75,10 +75,12 @@ events.on('card:select', (item: CardItem) => {
 
 // добавление товара в корзину
 events.on('item:add', (item: CardItem) => {
-  item.chosen = true;
-  appData.addToBasket(item);
-  page.counter = appData.getBasketAmount();
-  modal.close();
+
+    item.chosen = true;
+    appData.addToBasket(item);
+    page.counter = appData.getBasketAmount();
+    modal.close();
+
 })
 
 // удаление товара из корзины
